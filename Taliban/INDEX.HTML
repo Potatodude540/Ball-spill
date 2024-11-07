@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Ball Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #game-area {
+            position: relative;
+            width: 300px;
+            height: 500px;
+            border: 2px solid #333;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        #bucket {
+            position: absolute;
+            bottom: 10px;
+            width: 60px;
+            height: 30px;
+            background-color: #007bff;
+            left: 120px; /* Center the bucket */
+        }
+
+        #ball {
+            position: absolute;
+            top: -20px;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>ta på bålens</h1>
+    <p>Score: <span id="score">0</span></p>
+    <div id="game-area">
+        <div id="bucket"></div>
+        <div id="ball"></div>
+    </div>
+    <script>
+        const bucket = document.getElementById("bucket");
+        const ball = document.getElementById("ball");
+        const scoreDisplay = document.getElementById("score");
+
+        let bucketX = 120;
+        let ballX = Math.floor(Math.random() * 280);
+        let ballY = -20;
+        let score = 0;
+        let gameOver = false;
+
+        // Move bucket left or right
+        document.addEventListener("keydown", (e) => {
+            if (gameOver) return;
+            if (e.key === "ArrowLeft" && bucketX > 0) bucketX -= 10;
+            if (e.key === "ArrowRight" && bucketX < 240) bucketX += 10;
+            bucket.style.left = bucketX + "px";
+        });
+
+        // Game loop
+        function gameLoop() {
+            if (gameOver) return;
+
+            // Move the ball down
+            ballY += 4;
+            ball.style.top = ballY + "px";
+            ball.style.left = ballX + "px";
+
+            // Check if ball reaches bottom
+            if (ballY > 480) {
+                endGame();
+                return;
+            }
+
+            // Check if ball is caught by the bucket
+            if (ballY > 450 && ballX > bucketX - 20 && ballX < bucketX + 60) {
+                score++;
+                scoreDisplay.textContent = score;
+                resetBall();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Reset ball position after catch
+        function resetBall() {
+            ballY = -20;
+            ballX = Math.floor(Math.random() * 280);
+        }
+
+        // End game function
+        function endGame() {
+            gameOver = true;
+            alert("Game Over! Your score: " + score);
+        }
+
+        // Start the game loop
+        gameLoop();
+    </script>
+</body>
+</html>
